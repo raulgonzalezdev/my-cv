@@ -122,6 +122,32 @@ const ProfileSection = ({ lang, editable }) => {
       </Box>
     ))
 
+  const ExperienceEditable = ({ field, html, index, ...props }) => (
+    <EnhancedContentEditable
+      onSave={saveData}
+      minHeight="1rem"
+      tagName="span"
+      html={html}
+      disabled={!editable}
+      onChange={e =>
+        handleContentChange(e, lang, `experience.${index}.${field}`)
+      }
+      {...props}
+    />
+  )
+
+  const PersonalInfoEditable = ({ field, html, ...props }) => (
+    <EnhancedContentEditable
+      onSave={saveData}
+      minHeight="1rem"
+      tagName="span"
+      html={html}
+      disabled={!editable}
+      onChange={e => handleContentChange(e, lang, `personalInfo.${field}`)}
+      {...props}
+    />
+  )
+
   return (
     <Box w="100%">
       <VStack spacing={4} alignItems="start" w="100%">
@@ -133,60 +159,35 @@ const ProfileSection = ({ lang, editable }) => {
           w="100%"
           color={textColor}
         >
-          <EnhancedContentEditable
-            tagName="span"
+          <PersonalInfoEditable
+            field="name"
             html={content.personalInfo.name}
-            disabled={!editable}
-            onSave={saveData}
-            onChange={e => handleContentChange(e, lang, 'personalInfo.name')}
             className="contentEditable-xl font-weight-bold"
-            minHeight="1rem"
           />
-
-          <EnhancedContentEditable
-            onSave={saveData}
-            minHeight="1rem"
-            tagName="span"
+          <PersonalInfoEditable
+            field="title"
             html={content.personalInfo.title}
-            disabled={!editable}
-            onChange={e => handleContentChange(e, lang, 'personalInfo.title')}
             className="contentEditable-lg"
           />
-          <EnhancedContentEditable
-            onSave={saveData}
-            minHeight="1rem"
-            tagName="span"
+          <PersonalInfoEditable
+            field="country"
             html={content.personalInfo.country}
-            disabled={!editable}
-            onChange={e => handleContentChange(e, lang, 'personalInfo.country')}
             className="contentEditable-lg"
           />
 
           <Text>
             Contactar:
-            <EnhancedContentEditable
-              onSave={saveData}
-              minHeight="1rem"
-              tagName="span"
+            <PersonalInfoEditable
+              field="contact"
               html={content.personalInfo.contact}
-              disabled={!editable}
-              onChange={e =>
-                handleContentChange(e, lang, 'personalInfo.contact')
-              }
               className="contentEditable-lg"
             />
           </Text>
           <Text>
             LinkedIn:
-            <EnhancedContentEditable
-              onSave={saveData}
-              minHeight="1rem"
-              tagName="span"
+            <PersonalInfoEditable
+              field="linkedin"
               html={content.personalInfo.linkedin}
-              disabled={!editable}
-              onChange={e =>
-                handleContentChange(e, lang, 'personalInfo.linkedin')
-              }
               className="contentEditable-lg"
             />
           </Text>
@@ -237,7 +238,6 @@ const ProfileSection = ({ lang, editable }) => {
           bg={bgColor}
           color={textColor}
         >
-          
           {content.experience.map((exp, index) => (
             <Box
               boxShadow="md"
@@ -246,98 +246,49 @@ const ProfileSection = ({ lang, editable }) => {
               bg={bgColor}
               color={textColor}
               w="100%"
+              key={index}
             >
-              <EnhancedContentEditable
-                onSave={saveData}
-                minHeight="1rem"
-                tagName="span"
+              <ExperienceEditable
+                field="company"
                 html={exp.company}
-                disabled={!editable}
-                onChange={e =>
-                  handleContentChange(e, lang, `experience.${index}.company`)
-                }
+                index={index}
                 className="contentEditable-xl font-weight-bold"
               />
-              <EnhancedContentEditable
-                onSave={saveData}
-                minHeight="1rem"
-                tagName="span"
+              <ExperienceEditable
+                field="position"
                 html={exp.position}
-                disabled={!editable}
-                onChange={e =>
-                  handleContentChange(e, lang, `experience.${index}.position`)
-                }
+                index={index}
               />
-
-              <EnhancedContentEditable
-                onSave={saveData}
-                minHeight="1rem"
-                tagName="span"
+              <ExperienceEditable
+                field="period"
                 html={exp.period}
-                disabled={!editable}
-                onChange={e =>
-                  handleContentChange(e, lang, `experience.${index}.period`)
-                }
+                index={index}
               />
-              <EnhancedContentEditable
-                onSave={saveData}
-                minHeight="1rem"
-                tagName="span"
+              <ExperienceEditable
+                field="location"
                 html={exp.location}
-                disabled={!editable}
-                onChange={e =>
-                  handleContentChange(e, lang, `experience.${index}.location`)
-                }
+                index={index}
               />
-              <EnhancedContentEditable
-                onSave={saveData}
-                minHeight="1rem"
-                tagName="span"
+              <ExperienceEditable
+                field="description"
                 html={exp.description}
-                disabled={!editable}
-                onChange={e =>
-                  handleContentChange(
-                    e,
-                    lang,
-                    `experience.${index}.description`
-                  )
-                }
+                index={index}
               />
 
               <Text fontWeight="bold">Proyectos:</Text>
               <Box as="ul" listStyleType="disc" pl={4}>
                 {exp.projects.map((project, projIndex) => (
-                  <li key={index}>
-                    <EnhancedContentEditable
-                      onSave={saveData}
-                      minHeight="1rem"
-                      key={projIndex}
-                      tagName="span"
+                  <li key={projIndex}>
+                    <ExperienceEditable
+                      field={`projects.${projIndex}.name`}
                       html={project.name}
-                      disabled={!editable}
+                      index={index}
                       className="contentEditable-pre-wrap"
-                      onChange={e =>
-                        handleContentChange(
-                          e,
-                          lang,
-                          `experience.${index}.projects.${projIndex}.name`
-                        )
-                      }
                     />
-                    <EnhancedContentEditable
-                      onSave={saveData}
-                      minHeight="1rem"
-                      key={projIndex}
-                      tagName="span"
+                    <ExperienceEditable
+                      field={`projects.${projIndex}.description`}
                       html={project.description}
-                      disabled={!editable}
-                      onChange={e =>
-                        handleContentChange(
-                          e,
-                          lang,
-                          `experience.${index}.projects.${projIndex}.description`
-                        )
-                      }
+                      index={index}
                       className="contentEditable-pre-wrap"
                     />
                   </li>
@@ -346,7 +297,6 @@ const ProfileSection = ({ lang, editable }) => {
             </Box>
           ))}
         </Grid>
-        {/* </Box> */}
 
         <Grid
           templateColumns={{
