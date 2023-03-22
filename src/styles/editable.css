@@ -1,0 +1,16 @@
+.contentEditable-xl {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  
+  .contentEditable-lg {
+    font-size: 1.125rem;
+  }
+  
+  .contentEditable-prepend::before {
+    content: attr(data-prepend);
+  }
+  
+  .contentEditable-pre-wrap {
+    white-space: pre-wrap;
+  }

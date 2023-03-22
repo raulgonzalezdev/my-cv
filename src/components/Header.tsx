@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Box,
+  Button,
   Heading,
   Flex,
   Spacer,
@@ -13,7 +14,7 @@ import {
 import { useRouter } from 'next/router';
 import { useColorMode } from '@chakra-ui/react';
 
-const Header = ({ lang, setLang, toggleColorMode }) => {
+const Header = ({ lang, setLang, toggleColorMode, setEditable, editable }) => {
   const router = useRouter();
   const { colorMode } = useColorMode();
 
@@ -25,6 +26,17 @@ const Header = ({ lang, setLang, toggleColorMode }) => {
       query: { ...router.query, lang: newLang },
     });
   };
+
+  const handleEditableChange = () => {
+    const newEditable = !editable;
+    const newLang = newEditable ? 'Editar Plantilla' : 'Vista Final';
+    setEditable(newEditable);
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, editable: newLang },
+    });
+  };
+  
 
   return (
     <Box bg="teal.500" p={4} color="white">
@@ -59,6 +71,17 @@ const Header = ({ lang, setLang, toggleColorMode }) => {
               onChange={toggleColorMode}
             />
           </FormControl>
+          <FormControl display="flex" alignItems="center">
+            <FormLabel htmlFor="editable-switch" mb="0">
+              {!editable ? 'Vista Final' : 'Editar Plantilla'}
+            </FormLabel>
+            <Switch
+              id="editable-switch"
+              isChecked={!editable}
+              onChange={handleEditableChange}
+            />
+          </FormControl>
+        
         </VStack>
       </Flex>
     </Box>

@@ -19,6 +19,7 @@ export const data = {
           "position": "Programador full stack",
           "period": "diciembre de 2021 - Present (1 año 4 meses)",
           "location": "Brasilia, Distrito Federal, Brasil",
+          "description": "Contribuí al desarrollo de Reveal, una plataforma de control de aplicaciones...",
           "projects": [
             {
               "name": "Proyecto Teleport",
@@ -69,7 +70,11 @@ export const data = {
         "Desarrollo de aplicaciones móviles",
         "Facilidad de adaptación"
       ],
-      
+      "certificates":  [
+        "Inteligencia artificial",
+        "Desarrollo de aplicaciones móviles",
+        "Facilidad de adaptación"
+      ],
 
     },
     "en": {
@@ -138,6 +143,11 @@ export const data = {
           }
         ],
        "interests":  [
+        "Inteligencia artificial",
+        "Desarrollo de aplicaciones móviles",
+        "Facilidad de adaptación"
+      ],
+      "certificates":  [
         "Inteligencia artificial",
         "Desarrollo de aplicaciones móviles",
         "Facilidad de adaptación"

@@ -2,6 +2,7 @@
 import { AppProps } from "next/app";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import * as React from "react";
+import '../styles/editable.css'
 
 // Creación del tema personalizado
 const theme = extendTheme({
