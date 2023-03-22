@@ -72,9 +72,58 @@ const ProfileSection = ({ lang, editable }) => {
     }
   }
 
+  const renderSectionContent = (section, fieldPath) =>
+    section.map((item, index) => (
+      <EnhancedContentEditable
+        onSave={saveData}
+        minHeight="1rem"
+        key={index}
+        tagName="span"
+        html={item}
+        disabled={!editable}
+        onChange={e => handleContentChange(e, lang, `${fieldPath}.${index}`)}
+        className="contentEditable-pre-wrap"
+      />
+    ))
+
+  const sections = [
+    {
+      title: 'Certificaciones',
+      content: content.certificates,
+      fieldPath: 'certificates'
+    },
+    {
+      title: 'Aptitudes principales',
+      content: content.mainSkills,
+      fieldPath: 'mainSkills'
+    },
+    {
+      title: 'Intereses',
+      content: content.interests,
+      fieldPath: 'interests'
+    }
+  ]
+
+  const renderSections = () =>
+    sections.map(section => (
+      <Box
+        key={section.title}
+        boxShadow="md"
+        p="6"
+        rounded="md"
+        bg={bgColor}
+        color={textColor}
+        w="100%"
+      >
+        <Text fontWeight="bold">{section.title}:</Text>
+        <Box as="ul" listStyleType="disc" pl={4}>
+          {renderSectionContent(section.content, section.fieldPath)}
+        </Box>
+      </Box>
+    ))
+
   return (
     <Box w="100%">
-   
       <VStack spacing={4} alignItems="start" w="100%">
         <Box
           boxShadow="md"
@@ -143,235 +192,172 @@ const ProfileSection = ({ lang, editable }) => {
           </Text>
         </Box>
 
+        <Box
+          boxShadow="md"
+          p="6"
+          rounded="md"
+          bg={bgColor}
+          color={textColor}
+          w="100%"
+        >
+          <Text fontWeight="bold">Extracto</Text>
+          <EnhancedContentEditable
+            tagName="span"
+            html={content.extract}
+            disabled={!editable}
+            onSave={saveData}
+            onChange={e => handleContentChange(e, lang, 'extract')}
+            className="contentEditable-pre-wrap "
+            minHeight="1rem"
+          />
+        </Box>
+
+        <Box
+          boxShadow="md"
+          p="6"
+          rounded="md"
+          bg={bgColor}
+          color={textColor}
+          w="100%"
+        >
+          {' '}
+          <Text fontWeight="bold">Experiencia:</Text>
+        </Box>
+
         <Grid
           templateColumns={{
             base: 'repeat(1, 1fr)',
-            md: isLargerThan800 ? '75% 25%' : 'repeat(1, 1fr)'
+            md: 'repeat(2, 1fr)'
+          }}
+          gap={4}
+          w="100%"
+          boxShadow="md"
+          p="6"
+          rounded="md"
+          bg={bgColor}
+          color={textColor}
+        >
+          
+          {content.experience.map((exp, index) => (
+            <Box
+              boxShadow="md"
+              p="6"
+              rounded="md"
+              bg={bgColor}
+              color={textColor}
+              w="100%"
+            >
+              <EnhancedContentEditable
+                onSave={saveData}
+                minHeight="1rem"
+                tagName="span"
+                html={exp.company}
+                disabled={!editable}
+                onChange={e =>
+                  handleContentChange(e, lang, `experience.${index}.company`)
+                }
+                className="contentEditable-xl font-weight-bold"
+              />
+              <EnhancedContentEditable
+                onSave={saveData}
+                minHeight="1rem"
+                tagName="span"
+                html={exp.position}
+                disabled={!editable}
+                onChange={e =>
+                  handleContentChange(e, lang, `experience.${index}.position`)
+                }
+              />
+
+              <EnhancedContentEditable
+                onSave={saveData}
+                minHeight="1rem"
+                tagName="span"
+                html={exp.period}
+                disabled={!editable}
+                onChange={e =>
+                  handleContentChange(e, lang, `experience.${index}.period`)
+                }
+              />
+              <EnhancedContentEditable
+                onSave={saveData}
+                minHeight="1rem"
+                tagName="span"
+                html={exp.location}
+                disabled={!editable}
+                onChange={e =>
+                  handleContentChange(e, lang, `experience.${index}.location`)
+                }
+              />
+              <EnhancedContentEditable
+                onSave={saveData}
+                minHeight="1rem"
+                tagName="span"
+                html={exp.description}
+                disabled={!editable}
+                onChange={e =>
+                  handleContentChange(
+                    e,
+                    lang,
+                    `experience.${index}.description`
+                  )
+                }
+              />
+
+              <Text fontWeight="bold">Proyectos:</Text>
+              <Box as="ul" listStyleType="disc" pl={4}>
+                {exp.projects.map((project, projIndex) => (
+                  <li key={index}>
+                    <EnhancedContentEditable
+                      onSave={saveData}
+                      minHeight="1rem"
+                      key={projIndex}
+                      tagName="span"
+                      html={project.name}
+                      disabled={!editable}
+                      className="contentEditable-pre-wrap"
+                      onChange={e =>
+                        handleContentChange(
+                          e,
+                          lang,
+                          `experience.${index}.projects.${projIndex}.name`
+                        )
+                      }
+                    />
+                    <EnhancedContentEditable
+                      onSave={saveData}
+                      minHeight="1rem"
+                      key={projIndex}
+                      tagName="span"
+                      html={project.description}
+                      disabled={!editable}
+                      onChange={e =>
+                        handleContentChange(
+                          e,
+                          lang,
+                          `experience.${index}.projects.${projIndex}.description`
+                        )
+                      }
+                      className="contentEditable-pre-wrap"
+                    />
+                  </li>
+                ))}
+              </Box>
+            </Box>
+          ))}
+        </Grid>
+        {/* </Box> */}
+
+        <Grid
+          templateColumns={{
+            base: 'repeat(1, 1fr)',
+            md: isLargerThan800 ? '50% 50%' : 'repeat(1, 1fr)'
           }}
           gap={4}
           w="100%"
         >
-          <Box
-            boxShadow="md"
-            p="6"
-            rounded="md"
-            bg={bgColor}
-            color={textColor}
-            w="100%"
-          >
-            <Text fontWeight="bold">Extracto</Text>
-            <EnhancedContentEditable
-              tagName="span"
-              html={content.extract}
-              disabled={!editable}
-              onSave={saveData}
-              onChange={e => handleContentChange(e, lang, 'extract')}
-              className="contentEditable-pre-wrap "
-              minHeight="1rem"
-            />
-          </Box>
+          {renderSections()}
 
-          <Box
-            boxShadow="md"
-            p="6"
-            rounded="md"
-            bg={bgColor}
-            color={textColor}
-            w="100%"
-          >
-            <Text fontWeight="bold">Aptitudes principales:</Text>
-            <Box as="ul" listStyleType="disc" pl={4}>
-              {content.mainSkills.map((skill, index) => (
-                <li key={index}>
-                  <EnhancedContentEditable
-                    onSave={saveData}
-                    minHeight="1rem"
-                    key={index}
-                    tagName="span"
-                    html={skill}
-                    disabled={!editable}
-                    onChange={e =>
-                      handleContentChange(e, lang, `mainSkills.${index}`)
-                    }
-                    className="contentEditable-pre-wrap"
-                  />
-                </li>
-              ))}
-            </Box>
-          </Box>
-
-          <Box
-            boxShadow="md"
-            p="6"
-            rounded="md"
-            bg={bgColor}
-            color={textColor}
-            w="100%"
-          >
-            <Text fontWeight="bold">Experiencia:</Text>
-            {content.experience.map((exp, index) => (
-              <Box key={index}>
-                <EnhancedContentEditable
-                  onSave={saveData}
-                  minHeight="1rem"
-                  tagName="span"
-                  html={exp.company}
-                  disabled={!editable}
-                  onChange={e =>
-                    handleContentChange(e, lang, `experience.${index}.company`)
-                  }
-                  className="contentEditable-xl font-weight-bold"
-                />
-                <EnhancedContentEditable
-                  onSave={saveData}
-                  minHeight="1rem"
-                  tagName="span"
-                  html={exp.position}
-                  disabled={!editable}
-                  onChange={e =>
-                    handleContentChange(e, lang, `experience.${index}.position`)
-                  }
-                   
-                />
-
-                <EnhancedContentEditable
-                  onSave={saveData}
-                  minHeight="1rem"
-                  tagName="span"
-                  html={exp.period}
-                  disabled={!editable}
-                  onChange={e =>
-                    handleContentChange(e, lang, `experience.${index}.period`)
-                  }
-                   
-                />
-                <EnhancedContentEditable
-                  onSave={saveData}
-                  minHeight="1rem"
-                  tagName="span"
-                  html={exp.location}
-                  disabled={!editable}
-                  onChange={e =>
-                    handleContentChange(e, lang, `experience.${index}.location`)
-                  }
-                   
-                />
-                <EnhancedContentEditable
-                  onSave={saveData}
-                  minHeight="1rem"
-                  tagName="span"
-                  html={exp.description}
-                  disabled={!editable}
-                  onChange={e =>
-                    handleContentChange(
-                      e,
-                      lang,
-                      `experience.${index}.description`
-                    )
-                  }
-                   
-                />
-
-                <Text fontWeight="bold">Proyectos:</Text>
-                <Box as="ul" listStyleType="disc" pl={4}>
-                  {exp.projects.map((project, projIndex) => (
-                    <li key={index}>
-                      <EnhancedContentEditable
-                        onSave={saveData}
-                        minHeight="1rem"
-                        key={projIndex}
-                        tagName="span"
-                        html={project.name}
-                        disabled={!editable}
-                        className="contentEditable-pre-wrap"
-                        onChange={e =>
-                          handleContentChange(
-                            e,
-                            lang,
-                            `experience.${index}.projects.${projIndex}.name`
-                          )
-                        }
-                      />
-                      <EnhancedContentEditable
-                        onSave={saveData}
-                        minHeight="1rem"
-                        key={projIndex}
-                        tagName="span"
-                        html={project.description}
-                        disabled={!editable}
-                        onChange={e =>
-                          handleContentChange(
-                            e,
-                            lang,
-                            `experience.${index}.projects.${projIndex}.description`
-                          )
-                        }
-                        className="contentEditable-pre-wrap"
-                      />
-                    </li>
-                  ))}
-                </Box>
-              </Box>
-            ))}
-          </Box>
-
-          <Box
-            boxShadow="md"
-            p="6"
-            rounded="md"
-            bg={bgColor}
-            color={textColor}
-            w="100%"
-          >
-            <Text fontWeight="bold">Intereses:</Text>
-            <Box as="ul" listStyleType="disc" pl={4}>
-              {content.interests.map((interest, index) => (
-                <li key={index}>
-                  <EnhancedContentEditable
-                    onSave={saveData}
-                    minHeight="1rem"
-                    key={index}
-                    tagName="span"
-                    html={interest}
-                    disabled={!editable}
-                    onChange={e =>
-                      handleContentChange(e, lang, `interests.${index}`)
-                    }
-                    className="contentEditable-pre-wrap"
-                  />
-                </li>
-              ))}
-            </Box>
-          </Box>
-
-          <Box
-            boxShadow="md"
-            p="6"
-            rounded="md"
-            bg={bgColor}
-            color={textColor}
-            w="100%"
-          >
-            <Text fontWeight="bold">Certificaciones:</Text>
-            <Box as="ul" listStyleType="disc" pl={4}>
-              {content.certificates.map((certifica, index) => (
-                <li key={index}>
-                  <EnhancedContentEditable
-                    onSave={saveData}
-                    minHeight="1rem"
-                    key={index}
-                    tagName="span"
-                    html={certifica}
-                    disabled={!editable}
-                    onChange={e =>
-                      handleContentChange(e, lang, `certificates.${index}`)
-                    }
-                    className="contentEditable-pre-wrap"
-                  />
-                </li>
-              ))}
-            </Box>
-          </Box>
           {editable && (
             <Button
               onClick={() => {
