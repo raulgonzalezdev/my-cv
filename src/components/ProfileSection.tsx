@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {
-  VStack,
-  Text,
-  Box,
-  Button,
-  Grid,
-  useMediaQuery,
-  useColorModeValue
-} from '@chakra-ui/react'
+import { VStack, Text, Box, Button, Grid, useMediaQuery, useColorModeValue } from '@chakra-ui/react'
 
 import EnhancedContentEditable from './EnhancedContentEditable'
 import { data } from '../api/data'
@@ -66,9 +58,7 @@ const ProfileSection = ({ lang, editable }) => {
       alert('¡Datos guardados exitosamente!')
     } catch (error) {
       console.error('Error al guardar datos:', error)
-      alert(
-        'Hubo un error al guardar los datos. Por favor, inténtalo de nuevo.'
-      )
+      alert('Hubo un error al guardar los datos. Por favor, inténtalo de nuevo.')
     }
   }
 
@@ -78,7 +68,6 @@ const ProfileSection = ({ lang, editable }) => {
         onSave={saveData}
         minHeight="1rem"
         key={index}
-        tagName="span"
         html={item}
         disabled={!editable}
         onChange={e => handleContentChange(e, lang, `${fieldPath}.${index}`)}
@@ -106,15 +95,7 @@ const ProfileSection = ({ lang, editable }) => {
 
   const renderSections = () =>
     sections.map(section => (
-      <Box
-        key={section.title}
-        boxShadow="md"
-        p="6"
-        rounded="md"
-        bg={bgColor}
-        color={textColor}
-        w="100%"
-      >
+      <Box key={section.title} boxShadow="md" p="6" rounded="md" bg={bgColor} color={textColor} w="100%">
         <Text fontWeight="bold">{section.title}:</Text>
         <Box as="ul" listStyleType="disc" pl={4}>
           {renderSectionContent(section.content, section.fieldPath)}
@@ -122,106 +103,74 @@ const ProfileSection = ({ lang, editable }) => {
       </Box>
     ))
 
-  const ExperienceEditable = ({ field, html, index, ...props }) => (
-    <EnhancedContentEditable
-      onSave={saveData}
-      minHeight="1rem"
-      tagName="span"
-      html={html}
-      disabled={!editable}
-      onChange={e =>
-        handleContentChange(e, lang, `experience.${index}.${field}`)
-      }
-      {...props}
-    />
-  )
-
-  const PersonalInfoEditable = ({ field, html, ...props }) => (
-    <EnhancedContentEditable
-      onSave={saveData}
-      minHeight="1rem"
-      tagName="span"
-      html={html}
-      disabled={!editable}
-      onChange={e => handleContentChange(e, lang, `personalInfo.${field}`)}
-      {...props}
-    />
-  )
 
   return (
     <Box w="100%">
       <VStack spacing={4} alignItems="start" w="100%">
-        <Box
-          boxShadow="md"
-          p="6"
-          rounded="md"
-          bg={bgColor}
-          w="100%"
-          color={textColor}
-        >
-          <PersonalInfoEditable
-            field="name"
+        <Box boxShadow="md" p="6" rounded="md" bg={bgColor} w="100%" color={textColor}>
+          <EnhancedContentEditable
+            onSave={saveData}
+            minHeight="1rem"
+            disabled={!editable}
             html={content.personalInfo.name}
             className="contentEditable-xl font-weight-bold"
+            onChange={e => handleContentChange(e, lang, `personalInfo.name`)}
           />
-          <PersonalInfoEditable
-            field="title"
+
+          <EnhancedContentEditable
+            onSave={saveData}
+            minHeight="1rem"
+            disabled={!editable}
             html={content.personalInfo.title}
             className="contentEditable-lg"
+            onChange={e => handleContentChange(e, lang, `personalInfo.title`)}
           />
-          <PersonalInfoEditable
-            field="country"
+          <EnhancedContentEditable
+            onSave={saveData}
+            minHeight="1rem"
+            disabled={!editable}
             html={content.personalInfo.country}
             className="contentEditable-lg"
+            onChange={e => handleContentChange(e, lang, `personalInfo.country`)}
           />
 
           <Text>
             Contactar:
-            <PersonalInfoEditable
-              field="contact"
+            <EnhancedContentEditable
+              onSave={saveData}
+              minHeight="1rem"
+              disabled={!editable}
               html={content.personalInfo.contact}
               className="contentEditable-lg"
+              onChange={e => handleContentChange(e, lang, `personalInfo.contact`)}
             />
           </Text>
           <Text>
             LinkedIn:
-            <PersonalInfoEditable
-              field="linkedin"
+            <EnhancedContentEditable
+              onSave={saveData}
+              minHeight="1rem"
+              disabled={!editable}
               html={content.personalInfo.linkedin}
               className="contentEditable-lg"
+              onChange={e => handleContentChange(e, lang, `personalInfo.linkedin`)}
             />
           </Text>
         </Box>
 
-        <Box
-          boxShadow="md"
-          p="6"
-          rounded="md"
-          bg={bgColor}
-          color={textColor}
-          w="100%"
-        >
+        <Box boxShadow="md" p="6" rounded="md" bg={bgColor} color={textColor} w="100%">
           <Text fontWeight="bold">Extracto</Text>
           <EnhancedContentEditable
-            tagName="span"
             html={content.extract}
             disabled={!editable}
             onSave={saveData}
             onChange={e => handleContentChange(e, lang, 'extract')}
-            className="contentEditable-pre-wrap "
+            className="contentEditable-pre-wrap"
             minHeight="1rem"
           />
         </Box>
 
-        <Box
-          boxShadow="md"
-          p="6"
-          rounded="md"
-          bg={bgColor}
-          color={textColor}
-          w="100%"
-        >
-          {' '}
+        <Box boxShadow="md" p="6" rounded="md" bg={bgColor} color={textColor} w="100%">
           <Text fontWeight="bold">Experiencia:</Text>
         </Box>
 
@@ -239,57 +188,75 @@ const ProfileSection = ({ lang, editable }) => {
           color={textColor}
         >
           {content.experience.map((exp, index) => (
-            <Box
-              boxShadow="md"
-              p="6"
-              rounded="md"
-              bg={bgColor}
-              color={textColor}
-              w="100%"
-              key={index}
-            >
-              <ExperienceEditable
-                field="company"
+            <Box boxShadow="md" p="6" rounded="md" bg={bgColor} color={textColor} w="100%" key={index}>
+              <EnhancedContentEditable
                 html={exp.company}
                 index={index}
+                disabled={!editable}
+                onSave={saveData}
+                onChange={e => handleContentChange(e, lang, 'experience.company')}
                 className="contentEditable-xl font-weight-bold"
+                minHeight="1rem"
               />
-              <ExperienceEditable
-                field="position"
+              <EnhancedContentEditable
                 html={exp.position}
                 index={index}
+                disabled={!editable}
+                onSave={saveData}
+                onChange={e => handleContentChange(e, lang, 'experience.position')}
+                className="contentEditable-pre-wrap"
+                minHeight="1rem"
               />
-              <ExperienceEditable
-                field="period"
+              <EnhancedContentEditable
                 html={exp.period}
                 index={index}
+                disabled={!editable}
+                onSave={saveData}
+                onChange={e => handleContentChange(e, lang, 'experience.period')}
+                className="contentEditable-pre-wrap"
+                minHeight="1rem"
               />
-              <ExperienceEditable
-                field="location"
+              <EnhancedContentEditable
                 html={exp.location}
                 index={index}
+                disabled={!editable}
+                onSave={saveData}
+                onChange={e => handleContentChange(e, lang, 'experience.location')}
+                className="contentEditable-pre-wrap"
+                minHeight="1rem"
               />
-              <ExperienceEditable
-                field="description"
+              <EnhancedContentEditable
                 html={exp.description}
                 index={index}
+                disabled={!editable}
+                onSave={saveData}
+                onChange={e => handleContentChange(e, lang, 'experience.description')}
+                className="contentEditable-pre-wrap"
+                minHeight="1rem"
               />
 
               <Text fontWeight="bold">Proyectos:</Text>
               <Box as="ul" listStyleType="disc" pl={4}>
                 {exp.projects.map((project, projIndex) => (
                   <li key={projIndex}>
-                    <ExperienceEditable
-                      field={`projects.${projIndex}.name`}
+                    <EnhancedContentEditable
                       html={project.name}
-                      index={index}
+                      index={projIndex}
+                      disabled={!editable}
+                      onSave={saveData}
+                      onChange={e => handleContentChange(e, lang, `projects.${projIndex}.name`)}
                       className="contentEditable-pre-wrap"
+                      minHeight="1rem"
                     />
-                    <ExperienceEditable
-                      field={`projects.${projIndex}.description`}
+
+                    <EnhancedContentEditable
                       html={project.description}
-                      index={index}
+                      index={projIndex}
+                      disabled={!editable}
+                      onSave={saveData}
+                      onChange={e => handleContentChange(e, lang, `projects.${projIndex}.description`)}
                       className="contentEditable-pre-wrap"
+                      minHeight="1rem"
                     />
                   </li>
                 ))}

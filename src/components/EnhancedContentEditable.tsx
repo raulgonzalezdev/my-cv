@@ -144,7 +144,7 @@ const EnhancedContentEditable = ({
             style={iconStyle}
           />
           <MdSave
-            onClick={onSave}
+            onMouseDown={onSave}
             data-style="SAVE"
             cursor="pointer"
             style={iconStyle}
