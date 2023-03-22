@@ -1,18 +1,19 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Box, VStack, StackDivider } from '@chakra-ui/react'
 import { useColorMode } from '@chakra-ui/react'
 import Header from '../components/Header'
 import ProfileSection from '../components/ProfileSection'
 
-interface CVPageProps {
+interface IndexPageProps {
   lang: string
-  editable: boolean
+ 
 }
 
-const CVPage: React.FC<CVPageProps> = ({ lang, editable }) => {
+const IndexPage: React.FC<CVPageProps> = ({ lang, editable }) => {
   const [currentLang, setLang] = useState(lang)
   const [currentEditable, setEditable] = useState(editable)
   const { colorMode, toggleColorMode } = useColorMode()
+  const editorRef = useRef(null);
   return (
     <>
       <Box>
@@ -35,9 +36,9 @@ const CVPage: React.FC<CVPageProps> = ({ lang, editable }) => {
   )
 }
 
-CVPage.getInitialProps = async ctx => {
+IndexPage.getInitialProps = async ctx => {
   const lang = ctx.query.lang || 'es'
   return { lang }
 }
 
-export default CVPage
+export default IndexPage

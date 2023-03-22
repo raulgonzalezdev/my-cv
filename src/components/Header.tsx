@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Box,
     Button,
@@ -29,8 +29,10 @@ const Header = ({ lang, setLang, toggleColorMode, setEditable, editable }) => {
 
     const handleEditableChange = () => {
         const newEditable = !editable;
-        const newLang = newEditable ? 'Editar Plantilla' : 'Vista Final';
+        const newLang = newEditable ? 'Vista Final' :'Editar Plantilla';
         setEditable(newEditable);
+        console.log(newEditable)
+        
         router.push({
             pathname: router.pathname,
             query: { ...router.query, editable: newLang },
@@ -73,11 +75,11 @@ const Header = ({ lang, setLang, toggleColorMode, setEditable, editable }) => {
                     </FormControl>
                     <FormControl display="flex" alignItems="center">
                         <FormLabel htmlFor="editable-switch" mb="0">
-                            {!editable ? 'Vista Final' : 'Editar Plantilla'}
+                            {editable ?   'Editar Plantilla' : 'Vista Final' }
                         </FormLabel>
                         <Switch
                             id="editable-switch"
-                            isChecked={!editable}
+                            isChecked={editable}
                             onChange={handleEditableChange}
                         />
                     </FormControl>

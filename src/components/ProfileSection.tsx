@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { VStack, Text, Box, Button, Grid, useMediaQuery, useColorModeValue } from '@chakra-ui/react'
 
 import EnhancedContentEditable from './EnhancedContentEditable'
 import { data } from '../api/data'
+import Header from '../components/Header'
 
 const ProfileSection = ({ lang, editable }) => {
   const datapersona = data
@@ -14,6 +15,7 @@ const ProfileSection = ({ lang, editable }) => {
 
   const [saved, setSaved] = useState(false)
 
+  const editorRef = useRef(null);
   const handleContentChange = (e, lang, field) => {
     const newData = { ...editableData }
 
@@ -66,10 +68,10 @@ const ProfileSection = ({ lang, editable }) => {
     section.map((item, index) => (
       <EnhancedContentEditable
         onSave={saveData}
-        minHeight="1rem"
+        ref={editorRef} 
         key={index}
         html={item}
-        disabled={!editable}
+        editable={editable}
         onChange={e => handleContentChange(e, lang, `${fieldPath}.${index}`)}
         className="contentEditable-pre-wrap"
       />
@@ -110,8 +112,8 @@ const ProfileSection = ({ lang, editable }) => {
         <Box boxShadow="md" p="6" rounded="md" bg={bgColor} w="100%" color={textColor}>
           <EnhancedContentEditable
             onSave={saveData}
-            minHeight="1rem"
-            disabled={!editable}
+            ref={editorRef} 
+            editable={editable}
             html={content.personalInfo.name}
             className="contentEditable-xl font-weight-bold"
             onChange={e => handleContentChange(e, lang, `personalInfo.name`)}
@@ -119,16 +121,16 @@ const ProfileSection = ({ lang, editable }) => {
 
           <EnhancedContentEditable
             onSave={saveData}
-            minHeight="1rem"
-            disabled={!editable}
+            ref={editorRef} 
+            editable={editable}
             html={content.personalInfo.title}
             className="contentEditable-lg"
             onChange={e => handleContentChange(e, lang, `personalInfo.title`)}
           />
           <EnhancedContentEditable
             onSave={saveData}
-            minHeight="1rem"
-            disabled={!editable}
+            ref={editorRef} 
+            editable={editable}
             html={content.personalInfo.country}
             className="contentEditable-lg"
             onChange={e => handleContentChange(e, lang, `personalInfo.country`)}
@@ -138,8 +140,8 @@ const ProfileSection = ({ lang, editable }) => {
             Contactar:
             <EnhancedContentEditable
               onSave={saveData}
-              minHeight="1rem"
-              disabled={!editable}
+              ref={editorRef} 
+              editable={editable}
               html={content.personalInfo.contact}
               className="contentEditable-lg"
               onChange={e => handleContentChange(e, lang, `personalInfo.contact`)}
@@ -149,8 +151,8 @@ const ProfileSection = ({ lang, editable }) => {
             LinkedIn:
             <EnhancedContentEditable
               onSave={saveData}
-              minHeight="1rem"
-              disabled={!editable}
+              ref={editorRef} 
+              editable={editable}
               html={content.personalInfo.linkedin}
               className="contentEditable-lg"
               onChange={e => handleContentChange(e, lang, `personalInfo.linkedin`)}
@@ -162,11 +164,11 @@ const ProfileSection = ({ lang, editable }) => {
           <Text fontWeight="bold">Extracto</Text>
           <EnhancedContentEditable
             html={content.extract}
-            disabled={!editable}
+            editable={editable}
             onSave={saveData}
             onChange={e => handleContentChange(e, lang, 'extract')}
             className="contentEditable-pre-wrap"
-            minHeight="1rem"
+            ref={editorRef} 
           />
         </Box>
 
@@ -192,47 +194,47 @@ const ProfileSection = ({ lang, editable }) => {
               <EnhancedContentEditable
                 html={exp.company}
                 index={index}
-                disabled={!editable}
+                editable={editable}
                 onSave={saveData}
                 onChange={e => handleContentChange(e, lang, 'experience.company')}
                 className="contentEditable-xl font-weight-bold"
-                minHeight="1rem"
+                ref={editorRef} 
               />
               <EnhancedContentEditable
                 html={exp.position}
                 index={index}
-                disabled={!editable}
+                editable={editable}
                 onSave={saveData}
                 onChange={e => handleContentChange(e, lang, 'experience.position')}
                 className="contentEditable-pre-wrap"
-                minHeight="1rem"
+                ref={editorRef} 
               />
               <EnhancedContentEditable
                 html={exp.period}
                 index={index}
-                disabled={!editable}
+                editable={editable}
                 onSave={saveData}
                 onChange={e => handleContentChange(e, lang, 'experience.period')}
                 className="contentEditable-pre-wrap"
-                minHeight="1rem"
+                ref={editorRef} 
               />
               <EnhancedContentEditable
                 html={exp.location}
                 index={index}
-                disabled={!editable}
+                editable={editable}
                 onSave={saveData}
                 onChange={e => handleContentChange(e, lang, 'experience.location')}
                 className="contentEditable-pre-wrap"
-                minHeight="1rem"
+                ref={editorRef} 
               />
               <EnhancedContentEditable
                 html={exp.description}
                 index={index}
-                disabled={!editable}
+                editable={editable}
                 onSave={saveData}
                 onChange={e => handleContentChange(e, lang, 'experience.description')}
                 className="contentEditable-pre-wrap"
-                minHeight="1rem"
+                ref={editorRef} 
               />
 
               <Text fontWeight="bold">Proyectos:</Text>
@@ -242,21 +244,21 @@ const ProfileSection = ({ lang, editable }) => {
                     <EnhancedContentEditable
                       html={project.name}
                       index={projIndex}
-                      disabled={!editable}
+                      editable={editable}
                       onSave={saveData}
                       onChange={e => handleContentChange(e, lang, `projects.${projIndex}.name`)}
                       className="contentEditable-pre-wrap"
-                      minHeight="1rem"
+                      ref={editorRef} 
                     />
 
                     <EnhancedContentEditable
                       html={project.description}
                       index={projIndex}
-                      disabled={!editable}
+                      editable={editable}
                       onSave={saveData}
                       onChange={e => handleContentChange(e, lang, `projects.${projIndex}.description`)}
                       className="contentEditable-pre-wrap"
-                      minHeight="1rem"
+                      ref={editorRef} 
                     />
                   </li>
                 ))}

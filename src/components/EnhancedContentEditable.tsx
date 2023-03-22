@@ -1,199 +1,100 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import dynamic from 'next/dynamic'
+import { useEditorContext } from '../pages/EditorContext'
 import { Box } from '@chakra-ui/react'
-import {
-  MdFormatBold,
-  MdFormatItalic,
-  MdFormatUnderlined,
-  MdSave,
-  MdCode,
-  MdFormatAlignLeft,
-  MdFormatAlignCenter,
-  MdFormatAlignRight,
-  MdFormatAlignJustify,
-  MdFormatSize
-} from 'react-icons/md'
-import { stateToHTML } from 'draft-js-export-html'
 
-import {
-  Editor,
-  EditorState,
-  RichUtils,
-  ContentState,
-  convertFromHTML
-} from 'draft-js'
-import 'draft-js/dist/Draft.css'
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
+import 'react-quill/dist/quill.snow.css'
 
-const createEditorStateFromHtml = html => {
-  try {
-    const blocksFromHTML = convertFromHTML(html)
-    const contentState = ContentState.createFromBlockArray(
-      blocksFromHTML.contentBlocks,
-      blocksFromHTML.entityMap
-    )
-    return EditorState.createWithContent(contentState)
-  } catch (error) {
-    console.error('Error al convertir el HTML:', error)
-    return EditorState.createEmpty()
-  }
-}
+const EnhancedContentEditable = ({ html, onChange, editable, ...props }) => {
+  const { activeEditor, setActiveEditor } = useEditorContext()
+  const [value, setValue] = useState(html)
+  const editorId = useRef(Math.random().toString(36).substring(2, 11))
+  const quillRef = useRef(null);
 
-const editorStateToHtml = editorState => {
-  const contentState = editorState.getCurrentContent()
-  return stateToHTML(contentState)
-}
-
-const EnhancedContentEditable = ({
-  html,
-  disabled,
-  onChange,
-  onSave,
-  minHeight,
-  ...props
-}) => {
-  const [showEditorFunctions, setShowEditorFunctions] = useState(false)
-
-  const [editorState, setEditorState] = useState(() =>
-    createEditorStateFromHtml(html)
-  )
-
-  const handleEditorChange = newEditorState => {
-    setEditorState(newEditorState)
-
-    const contentHtml = editorStateToHtml(newEditorState)
-    onChange({ target: { value: contentHtml } })
+  const handleChange = newValue => {
+    setValue(newValue)
+    onChange({ target: { value: newValue } })
   }
 
-  const handleEditorFocus = () => {
-    setShowEditorFunctions(true)
-  }
-
-  const handleEditorBlur = () => {
-    setShowEditorFunctions(false)
-  }
-
-  const editorContainerStyle = {
-    minHeight: minHeight || '1rem',
-    border: showEditorFunctions ? '1px solid #ccc' : 'none',
-    padding: showEditorFunctions ? '4px' : '0',
-    borderRadius: '4px'
-  }
-
-  const iconStyle = {
-    fontSize: '18px', // Ajusta el tamaño de los íconos
-    margin: '2px' // Añade espacio alrededor de los íconos
-  }
-
-  const handleKeyCommand = (command, newEditorState) => {
-    const newState = RichUtils.handleKeyCommand(newEditorState, command)
-    if (newState) {
-      handleEditorChange(newState)
-      return 'handled'
-    }
-    return 'not-handled'
-  }
-
-  const toggleInlineStyle = event => {
-    event.preventDefault()
-    const style = event.currentTarget.getAttribute('data-style')
-    if (style === 'SAVE') {
-      onSave()
-    } else {
-      handleEditorChange(RichUtils.toggleInlineStyle(editorState, style))
-    }
-  }
-
-  const toggleBlockType = event => {
-    event.preventDefault()
-    const blockType = event.currentTarget.getAttribute('data-block-type')
-    handleEditorChange(RichUtils.toggleBlockType(editorState, blockType))
-  }
-
-  const ReadOnlyContent = ({ html }) => {
-    const editorState = createEditorStateFromHtml(html)
-    const contentHtml = editorStateToHtml(editorState)
-
+  const ReadOnlyContent = () => {
     return (
-      <div
-        dangerouslySetInnerHTML={{ __html: contentHtml }}
+      // //    <div className="ql-container">
+      //     {/* <div className="ql-editor"> */}
+      <Box
+        dangerouslySetInnerHTML={{ __html: value }}
         style={{ minHeight: '1rem' }}
+        onClick={() => {
+          if (editable) setActiveEditor(editorId.current)
+        }}
         {...props}
       />
+      //     {/* </div> */}
+      // //    </div>
     )
   }
+  const handleBlur = (e) => {
+    if (editable) {
+      setTimeout(() => {
+        if (quillRef.current && typeof quillRef.current.getEditor === 'function') {
+          const quillEditor = quillRef.current.getEditor();
+          const quillContainer = quillEditor?.container;
+  
+          if (
+            quillContainer &&
+            !quillContainer.contains(e.relatedTarget) &&
+            !quillContainer.contains(document.activeElement)
+          ) {
+            setActiveEditor(null);
+          }
+        }
+      }, 200);
+    }
+  };
+  
+  
+  
 
-  return (
-    <div style={editorContainerStyle} {...props}>
-      {!disabled && showEditorFunctions && (
-        <Box display="flex" justifyContent="space-between" width="25%">
-          <MdFormatBold
-            onMouseDown={toggleInlineStyle}
-            data-style="BOLD"
-            cursor="pointer"
-            style={iconStyle}
-          />
-          <MdFormatItalic
-            onMouseDown={toggleInlineStyle}
-            data-style="ITALIC"
-            cursor="pointer"
-            style={iconStyle}
-          />
-          <MdFormatUnderlined
-            onMouseDown={toggleInlineStyle}
-            data-style="UNDERLINE"
-            cursor="pointer"
-            style={iconStyle}
-          />
-          <MdSave
-            onMouseDown={onSave}
-            data-style="SAVE"
-            cursor="pointer"
-            style={iconStyle}
-          />
-          <MdCode
-            onMouseDown={toggleInlineStyle}
-            data-style="CODE"
-            cursor="pointer"
-            style={iconStyle}
-          />
-          <MdFormatAlignLeft
-            onMouseDown={toggleBlockType}
-            data-block-type="unstyled"
-            cursor="pointer"
-          />
-          <MdFormatAlignCenter
-            onMouseDown={toggleBlockType}
-            data-block-type="CENTER"
-            cursor="pointer"
-            style={iconStyle}
-          />
-          <MdFormatAlignRight
-            onMouseDown={toggleBlockType}
-            data-block-type="right"
-            cursor="pointer"
-            style={iconStyle}
-          />
-          <MdFormatAlignJustify
-            onMouseDown={toggleBlockType}
-            data-block-type="justify"
-            cursor="pointer"
-            style={iconStyle}
-          />
-        </Box>
-      )}
-      {disabled ? (
-        <ReadOnlyContent html={html} />
-      ) : (
-        <Editor
-          editorState={editorState}
-          onChange={handleEditorChange}
-          handleKeyCommand={handleKeyCommand}
-          onFocus={handleEditorFocus}
-          onBlur={handleEditorBlur}
-          readOnly={disabled}
-          {...props}
-        />
-      )}
-    </div>
+  useEffect(() => {
+    if (activeEditor !== editorId.current && activeEditor !== null) {
+      setActiveEditor(null)
+    }
+  }, [])
+
+  return activeEditor === editorId.current ? (
+    <ReactQuill
+      ref={quillRef}
+      value={value}
+      onChange={handleChange}
+      onBlur={e => handleBlur(e)}
+      modules={{
+        toolbar: [
+          ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+          ['blockquote', 'code-block'],
+      
+          [{ header: 1 }, { header: 2 }], // custom button values
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+          [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+          [{ direction: 'rtl' }], // text direction
+      
+          [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+          [{ header: [1, 2, 3, 4, 5, 6, false] }],
+      
+          [{ color: [] }, { background: [] }], // dropdown with defaults
+          [{ font: [] }],
+          [{ align: [] }],
+      
+          ['clean'], // remove formatting button
+      
+          ['link', 'image', 'video'] // link and image, video
+        ]
+      }}
+      
+      {...props}
+    />
+  ) : (
+    <ReadOnlyContent />
   )
 }
 

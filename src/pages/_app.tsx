@@ -3,6 +3,7 @@ import { AppProps } from 'next/app'
 import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 import * as React from 'react'
 import '../styles/editable.css'
+import { EditorProvider } from './EditorContext';
 
 // Creación del tema personalizado
 const theme = extendTheme({
@@ -19,7 +20,9 @@ const theme = extendTheme({
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
+       <EditorProvider>
       <Component {...pageProps} />
+      </EditorProvider>
     </ChakraProvider>
   )
 }
