@@ -1,16 +1,39 @@
+.ql-editor {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.ql-container {
+  /* Ajusta el margen alrededor del contenedor */
+  margin: 16px;
+
+  /* Ajusta el ancho máximo del contenedor */
+  max-width: 100%;
+
+  /* Añade un borde alrededor del contenedor */
+  /* border: 1px solid rgba(0, 0, 0, 0.1); */
+
+  /* Ajusta el relleno interno del contenedor */
+  /* padding: 8px; */
+
+  /* Agrega cualquier otro estilo que necesites aquí */
+}
+
+
+/* Agrega aquí tus reglas CSS existentes */
 .contentEditable-xl {
-    font-size: 1.25rem;
-    font-weight: bold;
-  }
-  
-  .contentEditable-lg {
-    font-size: 1.125rem;
-  }
-  
-  .contentEditable-prepend::before {
-    content: attr(data-prepend);
-  }
-  
-  .contentEditable-pre-wrap {
-    white-space: pre-wrap;
-  }
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.contentEditable-lg {
+  font-size: 1.125rem;
+}
+
+.contentEditable-prepend::before {
+  content: attr(data-prepend);
+}
+
+.contentEditable-pre-wrap {
+  white-space: pre-wrap;
+}

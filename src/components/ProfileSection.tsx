@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { VStack, Text, Box, Button, Grid, useMediaQuery, useColorModeValue } from '@chakra-ui/react'
+import { VStack, Text, Box, Button, Grid, useMediaQuery, useColorModeValue, useDisclosure } from '@chakra-ui/react'
 
 import EnhancedContentEditable from './EnhancedContentEditable'
+
+import GeneratePDF from './GeneratePDF'
 import { data } from '../api/data'
-import Header from '../components/Header'
 
 const ProfileSection = ({ lang, editable }) => {
   const datapersona = data
@@ -12,40 +13,73 @@ const ProfileSection = ({ lang, editable }) => {
   const textColor = useColorModeValue('gray.700', 'gray.50')
 
   const [editableData, setEditableData] = useState(datapersona)
-
   const [saved, setSaved] = useState(false)
 
-  const editorRef = useRef(null);
-  const handleContentChange = (e, lang, field) => {
-    const newData = { ...editableData }
+  const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure()
 
-    const setNestedProperty = (obj, path, value) => {
-      if (path.length === 1) {
-        obj[path[0]] = value
-      } else {
-        const [head, ...tail] = path
-        if (!obj[head]) obj[head] = {}
-        setNestedProperty(obj[head], tail, value)
-      }
+  const editorRef = useRef(null)
+
+  const setNestedProperty = (obj, path, value) => {
+    if (!obj) {
+      return
     }
 
-    setNestedProperty(newData, [lang, ...field.split('.')], e.target.value)
-    setEditableData(newData)
+    if (path.length === 1) {
+      obj[path[0]] = value
+    } else {
+      const [head, ...tail] = path
+      if (!obj[head]) {
+        obj[head] = {}
+      }
+      setNestedProperty(obj[head], tail, value)
+    }
+  }
+
+  const handleContentChange = (e, lang, field) => {
+    setEditableData(prevData => {
+      const newData = { ...prevData }
+
+      setNestedProperty(newData, [lang, ...field.split('.')], e.target.value)
+
+      return newData
+    })
   }
 
   useEffect(() => {
     const savedData = localStorage.getItem('cvData')
     if (savedData) {
+      console.log('Cargando datos desde localStorage')
       setEditableData(JSON.parse(savedData))
     } else {
+      console.log('Cargando datos desde la fuente fija')
       setEditableData(datapersona)
     }
   }, [])
 
   useEffect(() => {
+    const savedData = localStorage.getItem('cvData')
+    if (savedData) {
+      const parsedSavedData = JSON.parse(savedData)
+      if (parsedSavedData[lang]) {
+        console.log('Cargando datos del lenguaje desde localStorage')
+        setEditableData(parsedSavedData)
+      } else {
+        console.log('Cargando datos del lenguaje desde la fuente fija')
+        setEditableData(datapersona)
+      }
+    } else {
+      console.log('Cargando datos del lenguaje desde la fuente fija')
+      setEditableData(datapersona)
+    }
+  }, [lang])
+  
+
+  useEffect(() => {
     if (saved) {
-      const jsonString = JSON.stringify(editableData)
-      localStorage.setItem('cvData', jsonString)
+      localStorage.removeItem('cvData');
+
+      localStorage.setItem('cvData', JSON.stringify(editableData))
+      console.log('Gurdando datos en localStorage')
       setSaved(false)
     }
   }, [saved, editableData])
@@ -54,10 +88,11 @@ const ProfileSection = ({ lang, editable }) => {
 
   const saveData = () => {
     try {
-      const jsonString = JSON.stringify(editableData)
-      localStorage.setItem('cvData', jsonString)
+      localStorage.removeItem('cvData');
+
+      localStorage.setItem('cvData', JSON.stringify(editableData))
       setSaved(true)
-      alert('¡Datos guardados exitosamente!')
+      onOpenDelete()
     } catch (error) {
       console.error('Error al guardar datos:', error)
       alert('Hubo un error al guardar los datos. Por favor, inténtalo de nuevo.')
@@ -68,12 +103,11 @@ const ProfileSection = ({ lang, editable }) => {
     section.map((item, index) => (
       <EnhancedContentEditable
         onSave={saveData}
-        ref={editorRef} 
-        key={index}
+        ref={editorRef}
         html={item}
         editable={editable}
         onChange={e => handleContentChange(e, lang, `${fieldPath}.${index}`)}
-        className="contentEditable-pre-wrap"
+        // className="contentEditable-pre-wrap"
       />
     ))
 
@@ -105,6 +139,11 @@ const ProfileSection = ({ lang, editable }) => {
       </Box>
     ))
 
+  const [saveButtonPosition, setSaveButtonPosition] = useState({
+    top: 120,
+    bottom: '4%',
+    right: '4%'
+  })
 
   return (
     <Box w="100%">
@@ -112,27 +151,25 @@ const ProfileSection = ({ lang, editable }) => {
         <Box boxShadow="md" p="6" rounded="md" bg={bgColor} w="100%" color={textColor}>
           <EnhancedContentEditable
             onSave={saveData}
-            ref={editorRef} 
+            ref={editorRef}
             editable={editable}
             html={content.personalInfo.name}
-            className="contentEditable-xl font-weight-bold"
             onChange={e => handleContentChange(e, lang, `personalInfo.name`)}
           />
 
           <EnhancedContentEditable
             onSave={saveData}
-            ref={editorRef} 
+            ref={editorRef}
             editable={editable}
             html={content.personalInfo.title}
-            className="contentEditable-lg"
             onChange={e => handleContentChange(e, lang, `personalInfo.title`)}
           />
           <EnhancedContentEditable
             onSave={saveData}
-            ref={editorRef} 
+            ref={editorRef}
             editable={editable}
             html={content.personalInfo.country}
-            className="contentEditable-lg"
+            // className="contentEditable-lg"
             onChange={e => handleContentChange(e, lang, `personalInfo.country`)}
           />
 
@@ -140,10 +177,10 @@ const ProfileSection = ({ lang, editable }) => {
             Contactar:
             <EnhancedContentEditable
               onSave={saveData}
-              ref={editorRef} 
+              ref={editorRef}
               editable={editable}
               html={content.personalInfo.contact}
-              className="contentEditable-lg"
+              // className="contentEditable-lg"
               onChange={e => handleContentChange(e, lang, `personalInfo.contact`)}
             />
           </Text>
@@ -151,10 +188,10 @@ const ProfileSection = ({ lang, editable }) => {
             LinkedIn:
             <EnhancedContentEditable
               onSave={saveData}
-              ref={editorRef} 
+              ref={editorRef}
               editable={editable}
               html={content.personalInfo.linkedin}
-              className="contentEditable-lg"
+              // className="contentEditable-lg"
               onChange={e => handleContentChange(e, lang, `personalInfo.linkedin`)}
             />
           </Text>
@@ -167,8 +204,7 @@ const ProfileSection = ({ lang, editable }) => {
             editable={editable}
             onSave={saveData}
             onChange={e => handleContentChange(e, lang, 'extract')}
-            className="contentEditable-pre-wrap"
-            ref={editorRef} 
+            ref={editorRef}
           />
         </Box>
 
@@ -196,45 +232,41 @@ const ProfileSection = ({ lang, editable }) => {
                 index={index}
                 editable={editable}
                 onSave={saveData}
-                onChange={e => handleContentChange(e, lang, 'experience.company')}
-                className="contentEditable-xl font-weight-bold"
-                ref={editorRef} 
+                onChange={e => handleContentChange(e, lang, `experience.${index}.company`)}
+                ref={editorRef}
               />
               <EnhancedContentEditable
                 html={exp.position}
                 index={index}
                 editable={editable}
                 onSave={saveData}
-                onChange={e => handleContentChange(e, lang, 'experience.position')}
-                className="contentEditable-pre-wrap"
-                ref={editorRef} 
+                onChange={e => handleContentChange(e, lang, `experience.${index}.position`)}
+                ref={editorRef}
               />
               <EnhancedContentEditable
                 html={exp.period}
                 index={index}
                 editable={editable}
                 onSave={saveData}
-                onChange={e => handleContentChange(e, lang, 'experience.period')}
-                className="contentEditable-pre-wrap"
-                ref={editorRef} 
+                onChange={e => handleContentChange(e, lang, `experience.${index}.period`)}
+                ref={editorRef}
               />
               <EnhancedContentEditable
                 html={exp.location}
                 index={index}
                 editable={editable}
                 onSave={saveData}
-                onChange={e => handleContentChange(e, lang, 'experience.location')}
-                className="contentEditable-pre-wrap"
-                ref={editorRef} 
+                onChange={e => handleContentChange(e, lang, `experience.${index}.location`)}
+                ref={editorRef}
               />
               <EnhancedContentEditable
                 html={exp.description}
                 index={index}
                 editable={editable}
                 onSave={saveData}
-                onChange={e => handleContentChange(e, lang, 'experience.description')}
-                className="contentEditable-pre-wrap"
-                ref={editorRef} 
+                onChange={e => handleContentChange(e, lang, `experience.${index}.description`)}
+                // className="contentEditable-pre-wrap"
+                ref={editorRef}
               />
 
               <Text fontWeight="bold">Proyectos:</Text>
@@ -246,9 +278,8 @@ const ProfileSection = ({ lang, editable }) => {
                       index={projIndex}
                       editable={editable}
                       onSave={saveData}
-                      onChange={e => handleContentChange(e, lang, `projects.${projIndex}.name`)}
-                      className="contentEditable-pre-wrap"
-                      ref={editorRef} 
+                      onChange={e => handleContentChange(e, lang, `experience.${index}.projects.${projIndex}.name`)}
+                      ref={editorRef}
                     />
 
                     <EnhancedContentEditable
@@ -256,9 +287,10 @@ const ProfileSection = ({ lang, editable }) => {
                       index={projIndex}
                       editable={editable}
                       onSave={saveData}
-                      onChange={e => handleContentChange(e, lang, `projects.${projIndex}.description`)}
-                      className="contentEditable-pre-wrap"
-                      ref={editorRef} 
+                      onChange={e =>
+                        handleContentChange(e, lang, `experience.${index}.projects.${projIndex}.description`)
+                      }
+                      ref={editorRef}
                     />
                   </li>
                 ))}
@@ -276,18 +308,52 @@ const ProfileSection = ({ lang, editable }) => {
           w="100%"
         >
           {renderSections()}
+          <Box boxShadow="md" p="6" rounded="md" bg={bgColor} w="100%" color={textColor}>
+            <Text fontWeight="bold">Educacion:</Text>
+            {content.education.map((educa, index) => (
+              <>
+                <EnhancedContentEditable
+                  html={educa.institution}
+                  index={index}
+                  editable={editable}
+                  onSave={saveData}
+                  onChange={e => handleContentChange(e, lang, `education.${index}.institution`)}
+                  ref={editorRef}
+                />
+                <EnhancedContentEditable
+                  html={educa.degree}
+                  index={index}
+                  editable={editable}
+                  onSave={saveData}
+                  onChange={e => handleContentChange(e, lang, `education.${index}.degree`)}
+                  ref={editorRef}
+                />
+                <EnhancedContentEditable
+                  html={educa.period}
+                  index={index}
+                  editable={editable}
+                  onSave={saveData}
+                  onChange={e => handleContentChange(e, lang, `education.${index}.period`)}
+                  ref={editorRef}
+                />
+              </>
+            ))}
+          </Box>
 
           {editable && (
-            <Button
-              onClick={() => {
-                saveData()
-                setSaved(true)
-              }}
-            >
-              Guardar
-            </Button>
+            <div style={{ position: 'fixed', ...saveButtonPosition, maxWidth: isLargerThan800 ? 'none' : '200px' }}>
+              <Button
+                onClick={() => {
+                  saveData()
+                  setSaved(true)
+                }}
+              >
+                Guardar
+              </Button>
+            </div>
           )}
         </Grid>
+        {isOpenDelete && <GeneratePDF isOpen={isOpenDelete} lang= {lang} onClose={onCloseDelete} data={editableData} />}
       </VStack>
     </Box>
   )

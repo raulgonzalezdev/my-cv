@@ -4,11 +4,10 @@ import { useColorMode } from '@chakra-ui/react'
 import Header from '../components/Header'
 import ProfileSection from '../components/ProfileSection'
 
-interface IndexPageProps {
-  lang: string
- 
+interface CVPageProps {
+  lang: string;
+  editable: boolean;
 }
-
 const IndexPage: React.FC<CVPageProps> = ({ lang, editable }) => {
   const [currentLang, setLang] = useState(lang)
   const [currentEditable, setEditable] = useState(editable)
@@ -29,16 +28,18 @@ const IndexPage: React.FC<CVPageProps> = ({ lang, editable }) => {
           spacing={4}
           align="stretch"
         >
-          <ProfileSection lang={currentLang} editable={currentEditable} />
+          <ProfileSection lang={currentLang} editable={currentEditable} key={currentLang} />
+
         </VStack>
       </Box>
     </>
   )
 }
-
 IndexPage.getInitialProps = async ctx => {
-  const lang = ctx.query.lang || 'es'
-  return { lang }
-}
+  const lang = ctx.query.lang || 'es';
+  const editable = ctx.query.editable ? ctx.query.editable === 'true' : false;
+  return { lang, editable };
+};
+
 
 export default IndexPage

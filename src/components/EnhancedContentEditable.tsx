@@ -6,11 +6,11 @@ import { Box } from '@chakra-ui/react'
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 import 'react-quill/dist/quill.snow.css'
 
-const EnhancedContentEditable = ({ html, onChange, editable, ...props }) => {
+const EnhancedContentEditable = ({ html, ref, onChange, editable, ...props }) => {
   const { activeEditor, setActiveEditor } = useEditorContext()
   const [value, setValue] = useState(html)
   const editorId = useRef(Math.random().toString(36).substring(2, 11))
-  const quillRef = useRef(null);
+  const quillRef = useRef(null)
 
   const handleChange = newValue => {
     setValue(newValue)
@@ -19,8 +19,6 @@ const EnhancedContentEditable = ({ html, onChange, editable, ...props }) => {
 
   const ReadOnlyContent = () => {
     return (
-      // //    <div className="ql-container">
-      //     {/* <div className="ql-editor"> */}
       <Box
         dangerouslySetInnerHTML={{ __html: value }}
         style={{ minHeight: '1rem' }}
@@ -29,31 +27,27 @@ const EnhancedContentEditable = ({ html, onChange, editable, ...props }) => {
         }}
         {...props}
       />
-      //     {/* </div> */}
-      // //    </div>
     )
   }
-  const handleBlur = (e) => {
+  
+  const handleBlur = e => {
     if (editable) {
       setTimeout(() => {
         if (quillRef.current && typeof quillRef.current.getEditor === 'function') {
-          const quillEditor = quillRef.current.getEditor();
-          const quillContainer = quillEditor?.container;
-  
+          const quillEditor = quillRef.current.getEditor()
+          const quillContainer = quillEditor?.container
+
           if (
             quillContainer &&
             !quillContainer.contains(e.relatedTarget) &&
             !quillContainer.contains(document.activeElement)
           ) {
-            setActiveEditor(null);
+            setActiveEditor(null)
           }
         }
-      }, 200);
+      }, 200)
     }
-  };
-  
-  
-  
+  }
 
   useEffect(() => {
     if (activeEditor !== editorId.current && activeEditor !== null) {
@@ -71,26 +65,25 @@ const EnhancedContentEditable = ({ html, onChange, editable, ...props }) => {
         toolbar: [
           ['bold', 'italic', 'underline', 'strike'], // toggled buttons
           ['blockquote', 'code-block'],
-      
+
           [{ header: 1 }, { header: 2 }], // custom button values
           [{ list: 'ordered' }, { list: 'bullet' }],
           [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
           [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
           [{ direction: 'rtl' }], // text direction
-      
+
           [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
           [{ header: [1, 2, 3, 4, 5, 6, false] }],
-      
+
           [{ color: [] }, { background: [] }], // dropdown with defaults
           [{ font: [] }],
           [{ align: [] }],
-      
+
           ['clean'], // remove formatting button
-      
+
           ['link', 'image', 'video'] // link and image, video
         ]
       }}
-      
       {...props}
     />
   ) : (

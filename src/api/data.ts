@@ -10,9 +10,9 @@ export const data = {
     extract:
       'Estracto: Con más de 20 años de experiencia en el ámbito tecnológico...',
     mainSkills: [
-      'Inteligencia artificial',
-      'Desarrollo de aplicaciones móviles',
-      'Facilidad de adaptación'
+      'Python',
+      'Java',
+      'SQL'
     ],
     experience: [
       {
@@ -61,7 +61,18 @@ export const data = {
         ]
       }
     ],
-    educacion: [
+    interests: [
+      'Beisbol',
+      'Idiomas',
+      'Running'
+    ],
+    certificates: [
+      'Inteligencia artificial ',
+      'Desarrollo de aplicaciones móviles',
+      'Facilidad de adaptación'
+    ],
+    
+    education: [
       {
         institution: 'IUTIRLA',
         degree: 'TSU INFORMATICA, Análisis de sistemas informáticos',
@@ -73,53 +84,44 @@ export const data = {
         period: 'marzo de 2006'
       }
     ],
-    interests: [
-      'Inteligencia artificial',
-      'Desarrollo de aplicaciones móviles',
-      'Facilidad de adaptación'
-    ],
-    certificates: [
-      'Inteligencia artificial',
-      'Desarrollo de aplicaciones móviles',
-      'Facilidad de adaptación'
-    ]
+    
   },
   en: {
     personalInfo: {
-      name: 'Raul Gonzalez',
-      title: 'FullStack Developer - Proyecto Cocriar - Central IT',
+      name: 'Raul',
+      title: 'FullStack Developer',
       country: 'Venezuela',
       contact: 'gq.raul@gmail.com',
       linkedin: 'www.linkedin.com/in/soyraulgonzalez'
     },
     extract:
-      'Estracto: Con más de 20 años de experiencia en el ámbito tecnológico...',
+      'Con más de 20 años de experiencia en el ámbito tecnológico...',
     mainSkills: [
-      'Inteligencia artificial',
-      'Desarrollo de aplicaciones móviles',
-      'Facilidad de adaptación'
+      '1 Python',
+      '2 Java',
+      '3 SQL'
     ],
     experience: [
       {
-        company: 'Central IT - Tecnologia em Negócios',
-        position: 'Programador full stack',
+        company: 'Central IT ',
+        position: 'Programador',
         period: 'diciembre de 2021 - Present (1 año 4 meses)',
         location: 'Brasilia, Distrito Federal, Brasil',
         projects: [
           {
             name: 'Proyecto Teleport',
             description:
-              'Participé como uno de los desarrolladores principales en el proyecto Teleport...'
+              '1 Participé como uno de los desarrolladores principales en el proyecto Teleport...'
           },
           {
-            name: 'Proyecto de Reconocimiento Facial UNIQ',
+            name: '1 Proyecto de Reconocimiento Facial UNIQ',
             description:
-              'Colaboré en el desarrollo de UNIQ, una aplicación de reconocimiento facial...'
+              '1 Colaboré en el desarrollo de UNIQ, una aplicación de reconocimiento facial...'
           },
           {
-            name: 'Proyecto Reveal',
+            name: ' 1 Proyecto Reveal',
             description:
-              'Contribuí al desarrollo de Reveal, una plataforma de control de aplicaciones...'
+              '1 Contribuí al desarrollo de Reveal, una plataforma de control de aplicaciones...'
           },
           {
             name: 'Ally Mobile',
@@ -144,7 +146,18 @@ export const data = {
         ]
       }
     ],
-    educacion: [
+    interests: [
+      'Beisbol',
+      'Idiomas',
+      'Running'
+    ],
+    certificates: [
+      'Inteligencia artificial ',
+      'Desarrollo de aplicaciones móviles',
+      'Facilidad de adaptación'
+    ]
+    ,
+    education: [
       {
         institution: 'IUTIRLA',
         degree: 'TSU INFORMATICA, Análisis de sistemas informáticos',
@@ -156,15 +169,6 @@ export const data = {
         period: 'marzo de 2006'
       }
     ],
-    interests: [
-      'Inteligencia artificial',
-      'Desarrollo de aplicaciones móviles',
-      'Facilidad de adaptación'
-    ],
-    certificates: [
-      'Inteligencia artificial',
-      'Desarrollo de aplicaciones móviles',
-      'Facilidad de adaptación'
-    ]
+    
   }
 }

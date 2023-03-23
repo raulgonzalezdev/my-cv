@@ -29,15 +29,15 @@ const Header = ({ lang, setLang, toggleColorMode, setEditable, editable }) => {
 
     const handleEditableChange = () => {
         const newEditable = !editable;
-        const newLang = newEditable ? 'Vista Final' :'Editar Plantilla';
         setEditable(newEditable);
-        console.log(newEditable)
-        
+        console.log(newEditable);
+    
         router.push({
             pathname: router.pathname,
-            query: { ...router.query, editable: newLang },
+            query: { ...router.query, editable: newEditable.toString() },
         });
     };
+    
 
 
     return (
