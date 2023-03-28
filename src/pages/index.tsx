@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import { Box, VStack, StackDivider } from '@chakra-ui/react'
 import { useColorMode } from '@chakra-ui/react'
 import Header from '../components/Header'
-import ProfileSection from '../components/ProfileSection'
+import ProfileSection from './cv/create'
 
 interface CVPageProps {
   lang: string;

@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { VStack, Text, Box, Button, Grid, useMediaQuery, useColorModeValue, useDisclosure } from '@chakra-ui/react'
 
-import EnhancedContentEditable from './EnhancedContentEditable'
+import EnhancedContentEditable from '../../components/EnhancedContentEditable'
 
-import GeneratePDF from './GeneratePDF'
-import { data } from '../api/data'
+import GeneratePDF from '../../components/GeneratePDF'
+import { data } from '../../api/data'
 
-const ProfileSection = ({ lang, editable }) => {
+const CVProfile = ({ lang, editable }) => {
   const datapersona = data
   const [isLargerThan800] = useMediaQuery('(min-width: 800px)')
   const bgColor = useColorModeValue('white', 'gray.700')
@@ -102,8 +102,9 @@ const ProfileSection = ({ lang, editable }) => {
   const renderSectionContent = (section, fieldPath) =>
     section.map((item, index) => (
       <EnhancedContentEditable
+        key={index}
         onSave={saveData}
-        ref={editorRef}
+        //// ref={editorRef}
         html={item}
         editable={editable}
         onChange={e => handleContentChange(e, lang, `${fieldPath}.${index}`)}
@@ -112,17 +113,20 @@ const ProfileSection = ({ lang, editable }) => {
     ))
 
   const sections = [
-    {
+    { 
+      id: 0,
       title: 'Certificaciones',
       content: content.certificates,
       fieldPath: 'certificates'
     },
     {
+      id:1,
       title: 'Aptitudes principales',
       content: content.mainSkills,
       fieldPath: 'mainSkills'
     },
     {
+      id: 2,
       title: 'Intereses',
       content: content.interests,
       fieldPath: 'interests'
@@ -131,9 +135,9 @@ const ProfileSection = ({ lang, editable }) => {
 
   const renderSections = () =>
     sections.map(section => (
-      <Box key={section.title} boxShadow="md" p="6" rounded="md" bg={bgColor} color={textColor} w="100%">
+      <Box key={section.id} boxShadow="md" p="6" rounded="md" bg={bgColor} color={textColor} w="100%">
         <Text fontWeight="bold">{section.title}:</Text>
-        <Box as="ul" listStyleType="disc" pl={4}>
+        <Box key={section.id} as="ul" listStyleType="disc" pl={4}>
           {renderSectionContent(section.content, section.fieldPath)}
         </Box>
       </Box>
@@ -145,13 +149,41 @@ const ProfileSection = ({ lang, editable }) => {
     right: '4%'
   })
 
+
+  // Para guardar el CV en la base de datos:
+const saveCV = async (cvData) => {
+  const response = await fetch('/api/cv', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(cvData),
+  });
+
+  if (!response.ok) {
+    throw new Error('Error al guardar el CV');
+  }
+
+  return await response.json();
+};
+
+// Para recuperar el CV de la base de datos:
+const fetchCV = async (id) => {
+  const response = await fetch(`/api/cv?id=${id}`);
+
+  if (!response.ok) {
+    throw new Error('Error al recuperar el CV');
+  }
+
+  return await response.json();
+};
+
+
   return (
     <Box w="100%">
       <VStack spacing={4} alignItems="start" w="100%">
         <Box boxShadow="md" p="6" rounded="md" bg={bgColor} w="100%" color={textColor}>
           <EnhancedContentEditable
             onSave={saveData}
-            ref={editorRef}
+           // ref={editorRef}
             editable={editable}
             html={content.personalInfo.name}
             onChange={e => handleContentChange(e, lang, `personalInfo.name`)}
@@ -159,14 +191,14 @@ const ProfileSection = ({ lang, editable }) => {
 
           <EnhancedContentEditable
             onSave={saveData}
-            ref={editorRef}
+           // ref={editorRef}
             editable={editable}
             html={content.personalInfo.title}
             onChange={e => handleContentChange(e, lang, `personalInfo.title`)}
           />
           <EnhancedContentEditable
             onSave={saveData}
-            ref={editorRef}
+           // ref={editorRef}
             editable={editable}
             html={content.personalInfo.country}
             // className="contentEditable-lg"
@@ -177,7 +209,7 @@ const ProfileSection = ({ lang, editable }) => {
             Contactar:
             <EnhancedContentEditable
               onSave={saveData}
-              ref={editorRef}
+             // ref={editorRef}
               editable={editable}
               html={content.personalInfo.contact}
               // className="contentEditable-lg"
@@ -188,7 +220,7 @@ const ProfileSection = ({ lang, editable }) => {
             LinkedIn:
             <EnhancedContentEditable
               onSave={saveData}
-              ref={editorRef}
+             // ref={editorRef}
               editable={editable}
               html={content.personalInfo.linkedin}
               // className="contentEditable-lg"
@@ -204,7 +236,7 @@ const ProfileSection = ({ lang, editable }) => {
             editable={editable}
             onSave={saveData}
             onChange={e => handleContentChange(e, lang, 'extract')}
-            ref={editorRef}
+           // ref={editorRef}
           />
         </Box>
 
@@ -233,7 +265,7 @@ const ProfileSection = ({ lang, editable }) => {
                 editable={editable}
                 onSave={saveData}
                 onChange={e => handleContentChange(e, lang, `experience.${index}.company`)}
-                ref={editorRef}
+               // ref={editorRef}
               />
               <EnhancedContentEditable
                 html={exp.position}
@@ -241,7 +273,7 @@ const ProfileSection = ({ lang, editable }) => {
                 editable={editable}
                 onSave={saveData}
                 onChange={e => handleContentChange(e, lang, `experience.${index}.position`)}
-                ref={editorRef}
+               // ref={editorRef}
               />
               <EnhancedContentEditable
                 html={exp.period}
@@ -249,7 +281,7 @@ const ProfileSection = ({ lang, editable }) => {
                 editable={editable}
                 onSave={saveData}
                 onChange={e => handleContentChange(e, lang, `experience.${index}.period`)}
-                ref={editorRef}
+               // ref={editorRef}
               />
               <EnhancedContentEditable
                 html={exp.location}
@@ -257,7 +289,7 @@ const ProfileSection = ({ lang, editable }) => {
                 editable={editable}
                 onSave={saveData}
                 onChange={e => handleContentChange(e, lang, `experience.${index}.location`)}
-                ref={editorRef}
+               // ref={editorRef}
               />
               <EnhancedContentEditable
                 html={exp.description}
@@ -266,7 +298,7 @@ const ProfileSection = ({ lang, editable }) => {
                 onSave={saveData}
                 onChange={e => handleContentChange(e, lang, `experience.${index}.description`)}
                 // className="contentEditable-pre-wrap"
-                ref={editorRef}
+               // ref={editorRef}
               />
 
               <Text fontWeight="bold">Proyectos:</Text>
@@ -279,7 +311,7 @@ const ProfileSection = ({ lang, editable }) => {
                       editable={editable}
                       onSave={saveData}
                       onChange={e => handleContentChange(e, lang, `experience.${index}.projects.${projIndex}.name`)}
-                      ref={editorRef}
+                     // ref={editorRef}
                     />
 
                     <EnhancedContentEditable
@@ -290,7 +322,7 @@ const ProfileSection = ({ lang, editable }) => {
                       onChange={e =>
                         handleContentChange(e, lang, `experience.${index}.projects.${projIndex}.description`)
                       }
-                      ref={editorRef}
+                     // ref={editorRef}
                     />
                   </li>
                 ))}
@@ -310,7 +342,7 @@ const ProfileSection = ({ lang, editable }) => {
           {renderSections()}
           <Box boxShadow="md" p="6" rounded="md" bg={bgColor} w="100%" color={textColor}>
             <Text fontWeight="bold">Educacion:</Text>
-            {content.education.map((educa, index) => (
+            {content.education?.map((educa, index) => (
               <>
                 <EnhancedContentEditable
                   html={educa.institution}
@@ -318,7 +350,7 @@ const ProfileSection = ({ lang, editable }) => {
                   editable={editable}
                   onSave={saveData}
                   onChange={e => handleContentChange(e, lang, `education.${index}.institution`)}
-                  ref={editorRef}
+                 // ref={editorRef}
                 />
                 <EnhancedContentEditable
                   html={educa.degree}
@@ -326,7 +358,7 @@ const ProfileSection = ({ lang, editable }) => {
                   editable={editable}
                   onSave={saveData}
                   onChange={e => handleContentChange(e, lang, `education.${index}.degree`)}
-                  ref={editorRef}
+                 // ref={editorRef}
                 />
                 <EnhancedContentEditable
                   html={educa.period}
@@ -334,7 +366,7 @@ const ProfileSection = ({ lang, editable }) => {
                   editable={editable}
                   onSave={saveData}
                   onChange={e => handleContentChange(e, lang, `education.${index}.period`)}
-                  ref={editorRef}
+                 // ref={editorRef}
                 />
               </>
             ))}
@@ -359,4 +391,4 @@ const ProfileSection = ({ lang, editable }) => {
   )
 }
 
-export default ProfileSection
+export default CVProfile

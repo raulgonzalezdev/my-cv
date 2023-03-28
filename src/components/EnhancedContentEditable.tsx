@@ -6,7 +6,7 @@ import { Box } from '@chakra-ui/react'
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 import 'react-quill/dist/quill.snow.css'
 
-const EnhancedContentEditable = ({ html, ref, onChange, editable, ...props }) => {
+const EnhancedContentEditable = ({ html,  onChange, editable, ...props }) => {
   const { activeEditor, setActiveEditor } = useEditorContext()
   const [value, setValue] = useState(html)
   const editorId = useRef(Math.random().toString(36).substring(2, 11))
